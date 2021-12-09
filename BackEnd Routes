@@ -1,0 +1,43 @@
+                BackEnd Routes
+
+Create a new user = username,email,password => post
+
+Log a user = eamil, password => get
+
+
+
+verify a user = email, password //remember the middleware to check verify func!! TOken?
+
+
+retrive all orders => userid in order table  get their orderders by id
+get=>
+find userID
+user.getOrders()
+
+
+retrive all plants => asee the plants by that date
+
+Create a new checkout info = > name, creditcard, address, state, city, zip, total
+asscosiated with user
+
+
+retrive a single order by userid and orderid
+user.getOrder()  ?????
+
+
+What does the BackEnd give and take?=======
+
+
+
+
+
+urls (BackEnd)
+create user=>   /user/singup
+login =>     /user/login
+verify=>     /user/verify
+getAllOrders=>   /orders
+getAllPlants =>   /plants
+createOrders   => /orders/new
+getSingleOrder => /orders/:orderid
+
+
