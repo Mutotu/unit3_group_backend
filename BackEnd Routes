@@ -24,6 +24,8 @@ asscosiated with user
 retrive a single order by userid and orderid
 user.getOrder()  ?????
 
+retrive a single plant info by ???
+
 
 What does the BackEnd give and take?=======
 
