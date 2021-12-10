@@ -52,13 +52,14 @@ userController.verify = async (req, res) => {
       },
     });
     console.log(veryfiedUser);
-    //if verfied, then res.json
-    // if (veryfiedUser) {
-    //   console.log("verfied user: ", veryfiedUser);
-    res.json({ veryfiedUser });
-    // } else {
-    //   console.log("not verfied");
-    // }
+    // if verfied, then res.json
+    if (veryfiedUser) {
+      console.log("verfied user: ", veryfiedUser);
+      res.json({ veryfiedUser });
+    } else {
+      console.log("not verfied");
+      res.json({ message: "User not found" });
+    }
     //see why catch is not working
   } catch (err) {
     console.log(err);
