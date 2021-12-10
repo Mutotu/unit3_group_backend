@@ -34,9 +34,10 @@ What does the BackEnd give and take?=======
 
 
 urls (BackEnd)
-create user=>   /user/singup
-login =>     /user/login
-verify=>     /user/verify
+
+create user=>   /user/singup   *
+login =>     /user/login      *
+verify=>     /user/verify   *
 getAllPlants =>   /plants
 getAllOrders=>   /orders
 createOrders   => /orders/new
