@@ -37,8 +37,8 @@ urls (BackEnd)
 create user=>   /user/singup
 login =>     /user/login
 verify=>     /user/verify
-getAllOrders=>   /orders
 getAllPlants =>   /plants
+getAllOrders=>   /orders
 createOrders   => /orders/new
 getSingleOrder => /orders/:orderid
 
