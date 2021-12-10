@@ -29,14 +29,12 @@ userController.findUser = async (req, res) => {
     });
     //when ready, use this below
     if (foundUser && foundUser.password === req.body.password) {
-      //  //reassign req.id = foundUSer.id   whatever
-      req.userId = foundUser.id;
-    } else {
-      res.json(null); //=> return nothing
+      console.log("found user:", foundUser);
+      res.json({ foundUser });
     }
-
-    console.log("found user:", foundUser);
-    res.json({ foundUser });
+    else {
+      res.status(400).json({ message: "No user found." }); //=> return nothing
+    }
   } catch (err) {
     console.log(err);
     res.json({ message: err });
