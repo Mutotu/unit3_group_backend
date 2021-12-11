@@ -44,16 +44,15 @@ userController.findUser = async (req, res) => {
 // verfiy the user
 userController.verify = async (req, res) => {
   try {
-    const veryfiedUser = await models.user.findOne({
+    const verifiedUser = await models.user.findOne({
       where: {
         id: req.headers.authorization,
       },
     });
-    console.log(veryfiedUser);
     // if verfied, then res.json
-    if (veryfiedUser) {
-      console.log("verfied user: ", veryfiedUser);
-      res.json({ veryfiedUser });
+    if (verifiedUser) {
+      console.log("verfied user: ", verifiedUser);
+      res.json({ verifiedUser: verifiedUser });
     } else {
       console.log("not verfied");
       res.json({ message: "User not found" });
