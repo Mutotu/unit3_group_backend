@@ -2,9 +2,11 @@
 const express = require("express");
 const rowdy = require("rowdy-logger");
 const cors = require("cors");
+const env = require('dotenv');
 const userRouter = require("./routers/userRouter");
 const ordersRouter = require("./routers/ordersRouter");
 const plantsRouter = require("./routers/plantsRouter");
+const req = require("express/lib/request");
 
 // App initialization.
 const app = express();
@@ -12,6 +14,7 @@ const routesReport = rowdy.begin(app);
 
 app.use(express.json());
 app.use(cors());
+env.config();
 
 // Set port for the app to listen on.
 const PORT = process.env.PORT || 3001;

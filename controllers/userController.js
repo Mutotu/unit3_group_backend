@@ -1,10 +1,12 @@
-// Install the required libraries.
+// ----------------------------------
+// | Install the required libraries.
+// ----------------------------------
 const models = require("../models");
+// Used for authentication of the user.
+const jwt = require('jsonwebtoken');
 // Used for password hashing.
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-// Used for authentication of the user.
-const jwt = require('jsonwebtoken');
 
 const userController = {};
 
@@ -13,13 +15,19 @@ userController.create = async (req, res) => {
     // Hash the new user's password before storing it.
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
     // Attempt to create the new user. This will fail if the username of email has already been taken.
-    const user = await models.user.create({
+    const newUser = await models.user.create({
       username: req.body.username,
       email: req.body.email,
-      password: hashedPassword,
+      password: hashedPassword
     });
-    // If the user is successfully made, return the user.
-    res.json({ user });
+    // Get the relevant user attributes.
+    const { dataValues, ...notNeeded } = newUser;
+    // If the user is successfully made, create a jwt authorization token to return for said user.
+    const authorization = jwt.sign({ id: dataValues.id }, process.env.JWT_SECRET);
+    // Return the relevant user attributes.
+    const { id, password, createdAt, updatedAt, ...userReturn } = dataValues;
+    userReturn.authorization = authorization;
+    res.json({ user: userReturn });
   }
   catch (err) {
     res.status(400).json({ message: err });
@@ -41,7 +49,14 @@ userController.findUser = async (req, res) => {
       passwordMatch = await bcrypt.compare(req.body.password, foundUser.password);
       // If the found user's password matches, return the user.
       if (passwordMatch) {
-        res.json({ foundUser });
+        // Get the relevant user attributes.
+        const { dataValues, ...notNeeded } = foundUser;
+        // Create a jwt authorization token to return for the found user.
+        const authorization = jwt.sign({ id: dataValues.id }, process.env.JWT_SECRET);
+        // Separate the user's data values into only the parts we will return.
+        const { password, createdAt, updatedAt, id, ...userReturn } = dataValues;
+        userReturn.authorization = authorization;
+        res.json({ user: userReturn });
       }
       // If the found user's password doesn't match, return an error message, but no user.
       else {
@@ -61,22 +76,23 @@ userController.findUser = async (req, res) => {
 // verfiy the user
 userController.verify = async (req, res) => {
   try {
-    const verifiedUser = await models.user.findOne({
-      where: {
-        id: req.headers.authorization,
-      },
-    });
+    const verifiedUser = await models.user.findByPk(req.verifiedId);
     // if verfied, then res.json
     if (verifiedUser) {
-      console.log("verfied user: ", verifiedUser);
-      res.json({ verifiedUser: verifiedUser });
+      // Get the relevant user attributes.
+      const { dataValues, ...notNeeded } = verifiedUser;
+      // Create a jwt authorization token to return for the found user.
+      const authorization = jwt.sign({ id: dataValues.id }, process.env.JWT_SECRET);
+      // Separate the user's data values into only the parts we will return.
+      const { password, createdAt, updatedAt, id, ...userReturn } = dataValues;
+      userReturn.authorization = authorization;
+      // Return the relevant user info.
+      res.json({ user: userReturn });
     } else {
-      console.log("not verfied");
-      res.json({ message: "User not found" });
+      res.status(400).json({ message: "User not found" });
     }
-    //see why catch is not working
+    //If errored, return the error.
   } catch (err) {
-    console.log(err);
     res.json({ message: err });
   }
 };
