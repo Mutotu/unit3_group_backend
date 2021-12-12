@@ -73,9 +73,16 @@ ordersController.createOrder = async function (req, res) {
             zip: req.body.address.zip,
             creditNum: req.body.creditNum
         });
+        console.log(newOrder);
         for (let i = 0; i < req.body.plants.length; i++) {
-            const plantToAdd = await models.plant.findByPk(req.body.plants[i].id);
-            await newOrder.addPlant(plantToAdd);
+            // Must manually create each plantOrder row (can't use 'magic method' - addPlant() - because the magic method won't allow the storage of duplicates of one plant, e.g., two fiddle leaf figs that were in the cart during checkout would only be stored in the database once and the order would show that the user only bought one fiddle leaf fig).
+            // Manually creating each plantOrder row allows duplicates.
+            await models.plantOrder.create({
+                orderId: newOrder.dataValues.id,
+                plantId: req.body.plants[i].id
+            })
+            /* const plantToAdd = await models.plant.findByPk(req.body.plants[i].id);
+            await newOrder.addPlant(plantToAdd); */
         }
         res.send({ message: "Order saved successfully." });
     }
