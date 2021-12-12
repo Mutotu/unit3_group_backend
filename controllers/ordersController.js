@@ -14,7 +14,7 @@ const ordersController = {};
 ordersController.getAllOrders = async function (req, res) {
     try {
         let orders = [];
-        const loggedInUser = await models.user.findByPk(req.headers.authorization);
+        const loggedInUser = await models.user.findByPk(req.verifiedId);
         const usersOrders = await loggedInUser.getOrders();
         for (let i = 0; i < usersOrders.length; i++) {
             const order = {};
@@ -36,12 +36,12 @@ ordersController.getAllOrders = async function (req, res) {
 // ----------------------------------------------------------------------
 ordersController.getOneOrder = async function (req, res) {
     try {
-        const loggedInUser = await models.user.findByPk(req.headers.authorization);
+        const loggedInUser = await models.user.findByPk(req.verifiedId);
         const order = {};
         const orderInfo = await models.order.findOne({
             where: {
                 id: req.params.orderId,
-                userId: req.headers.authorization
+                userId: req.verifiedId
             }
         });
         const plants = await orderInfo.getPlants();
@@ -65,7 +65,7 @@ ordersController.getOneOrder = async function (req, res) {
 // ------------------------------------------------------------------------
 ordersController.createOrder = async function (req, res) {
     try {
-        const loggedInUser = await models.user.findByPk(req.headers.authorization);
+        const loggedInUser = await models.user.findByPk(req.verifiedId);
         const newOrder = await loggedInUser.createOrder({
             street: req.body.address.street,
             city: req.body.address.city,
